@@ -22,19 +22,19 @@
 
 # Чтобы развернуть проект:
 Установите docker compose.
-На свой сервер скопируйте файл docker-compose.production.yml, создайте файл .env и заполните его в соответствии с файлом env.example и запустите проект в режиме демона командой ```sudo docker compose -f docker-compose.production.yml up -d```
+На свой сервер скопируйте файл docker-compose.production.yml, создайте файл .env и заполните его в соответствии с файлом env.example и запустите проект в режиме демона командой ```sudo docker compose -f docker-compose.production.yml up -d```.
 Выполните миграции и соберите статику бэкенда, скопируйте её в папку  /static/static/
 
 # Для использования CI/CD
 В GitHub Actions добавьте следующие секреты:
-DOCKER_USERNAME - логин на докерхабе
-DOCKER_PASSWORD - пароль на докерхабе
-HOST - адрес сервера
-USER - имя пользователя на сервере
-SSH_KEY - закрытый ssh-ключ
-SSH_PASSPHRASE - пароль для ssh-ключа
-TELEGRAM_TO - ваш телеграмм id
-TELEGRAM_TOKEN - токен вашего телеграмм-бота
+- DOCKER_USERNAME - логин на докерхабе
+- DOCKER_PASSWORD - пароль на докерхабе
+- HOST - адрес сервера
+- USER - имя пользователя на сервере
+- SSH_KEY - закрытый ssh-ключ
+- SSH_PASSPHRASE - пароль для ssh-ключа
+- TELEGRAM_TO - ваш телеграмм id
+- TELEGRAM_TOKEN - токен вашего телеграмм-бота
 
 
 Автор [Анатолий Пономарев](https://github.com/Karramb)
