@@ -10,7 +10,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
   backend:
-    image: 
+    image: karramb/foodgram_backend
     env_file: .env
     depends_on:
       - db
@@ -18,13 +18,13 @@ services:
       - static:/static/
       - media:/app/media/
   frontend:
-    image: 
+    image: karramb/foodgram_frontend
     command: cp -r /app/build/. /static/
     volumes:
       - static:/static
 
   gateway:
-    image: 
+    image: karramb/foodgram_nginx
     env_file: .env
     depends_on:
       - backend
