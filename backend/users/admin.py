@@ -10,6 +10,7 @@ class UserAdmin(UserAdmin):
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
     search_fields = ('username', 'first_name', 'last_name', 'email')
 
+
 @admin.register(Follow)
 class FollowAdmin(admin.ModelAdmin):
     list_display = ('user', 'subscriber')
@@ -17,5 +18,6 @@ class FollowAdmin(admin.ModelAdmin):
         'user__username',
         'subscriber__username'
     )
+
 
 admin.site.unregister(Group)
