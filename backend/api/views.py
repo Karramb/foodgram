@@ -5,11 +5,14 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views.decorators.http import require_GET
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
+from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
+                            ShoppingCart, Tag)
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+from users.models import Follow
 
 from api.filters import IngredientFilter, RecipeFilter
 from api.pagination import LimitPagination
@@ -19,9 +22,6 @@ from api.serializers import (AvatarSerializer, FavoriteSerializer,
                              GramUserCreateSerializer, IngredientSerializer,
                              RecipeCreateSerializer, RecipeSerializer,
                              ShoppingCartSerializer, TagSerializer)
-from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
-                            ShoppingCart, Tag)
-from users.models import Follow
 
 User = get_user_model()
 
