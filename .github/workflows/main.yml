@@ -71,10 +71,10 @@ jobs:
       with:
         node-version: 18
 
-    - name: Install dependencies
+    - name: Test frontend
       run: |
         cd frontend/
-        npm ci
+        npm run test
 
   build_frontend_and_push_to_docker_hub:
     if: github.ref == 'refs/heads/main'
