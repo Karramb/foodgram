@@ -29,7 +29,7 @@ User = get_user_model()
 @require_GET
 def short_url(request, pk):
     get_object_or_404(Recipe, pk=pk)
-    return redirect(f'/recipes/{pk}/')
+    return redirect(f"/recipes/{pk}/")
 
 
 class GramUserViewSet(UserViewSet):
@@ -189,7 +189,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def get_link(self, request, pk=None):
         if not Recipe.objects.filter(pk=pk).exists():
             raise ValidationError(f'Рецепт с ID {pk} не найден')
-        recipe = self.get_object()
+        recipe = get_object_or_404(Recipe, pk=pk)
         short_link = reverse('short_url', args=[recipe.pk])
         return Response({'short-link': request.build_absolute_uri(short_link)},
                         status=status.HTTP_200_OK)
