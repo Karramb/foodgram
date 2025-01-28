@@ -59,7 +59,7 @@ class Follow(models.Model):
         GramUser,
         on_delete=models.CASCADE,
         related_name='subscriber',
-        verbose_name='Подписка',
+        verbose_name='Автор',
     )
 
     class Meta:

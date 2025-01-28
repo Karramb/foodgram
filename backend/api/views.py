@@ -55,7 +55,7 @@ class GramUserViewSet(UserViewSet):
 
     @avatar.mapping.delete
     def delete_avatar(self, request, *args, **kwargs):
-        self.request.user.delete()
+        self.request.user.avatar.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
