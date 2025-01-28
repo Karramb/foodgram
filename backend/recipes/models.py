@@ -61,6 +61,7 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         Ingredient,
         through='RecipeIngredient',
+        blank=False,
         verbose_name='Ингредиенты'
     )
     text = models.CharField(
@@ -85,14 +86,6 @@ class Recipe(models.Model):
     pub_date = models.DateTimeField(
         'Дата публикации', auto_now_add=True
     )
-    REQUIRED_FIELDS = [
-        'name',
-        'tags',
-        'ingredients',
-        'text',
-        'cooking_time',
-        'image'
-    ]
 
     class Meta:
         ordering = ('-pub_date',)
