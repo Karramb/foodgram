@@ -62,6 +62,7 @@ class Recipe(models.Model):
         Ingredient,
         through='RecipeIngredient',
         blank=False,
+        null=False,
         verbose_name='Ингредиенты'
     )
     text = models.CharField(
