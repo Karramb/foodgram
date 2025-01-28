@@ -26,12 +26,6 @@ from users.models import Follow
 User = get_user_model()
 
 
-@require_GET
-def short_url(request, pk):
-    get_object_or_404(Recipe, pk=pk)
-    return redirect(f"/recipes/{pk}/")
-
-
 class GramUserViewSet(UserViewSet):
     queryset = User.objects.all()
     pagination_class = LimitPagination
@@ -187,10 +181,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         url_name='get-link',
     )
     def get_link(self, request, pk=None):
-        if not Recipe.objects.filter(pk=pk).exists():
-            raise ValidationError(f'Рецепт с ID {pk} не найден')
         recipe = get_object_or_404(Recipe, pk=pk)
-        short_link = reverse('short_url', args=[recipe.pk])
+        short_link = reverse(short_url, args=[recipe.pk])
         return Response({'short-link': request.build_absolute_uri(short_link)},
                         status=status.HTTP_200_OK)
 
@@ -285,3 +277,10 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (OwnerOrReadOnly,)
+
+
+@require_GET
+def short_url(request, pk):
+    if not Recipe.objects.filter(pk=pk).exists():
+        raise status.Http404(f'Рецепт с id "{pk}" не существует.')
+    return redirect(f"/recipes/{pk}/")
