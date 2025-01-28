@@ -177,6 +177,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     )
     ingredients = RecipeIngredientCreateSerializer(
         many=True,
+        allow_empty=False,
         label='Ингридиенты',
     )
     image = Base64ImageField(
@@ -215,7 +216,10 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return serializer.data
 
     def create(self, validated_data):
-        ingredients = validated_data.pop('ingredients')
+        ingredients = validated_data.pop('ingredients', None)
+        if ingredients is None or len(ingredients) == 0:
+            raise serializers.ValidationError({
+                'ingredients': 'Добавьте ингредиент.'})
         tags = validated_data.pop('tags')
         user = self.context.get('request').user
         recipe = Recipe.objects.create(**validated_data, author=user)
@@ -252,6 +256,10 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 f'Ингредиент "{lost_id}" не существует.'
             )
         return data
+
+    def validate_ingredients(self, value):
+        if value is None:
+            raise serializers.ValidationError('Добавьте ингридиенты')
 
 
 class RecipeSerializer(serializers.ModelSerializer):

@@ -7,6 +7,7 @@ from api.serializers import (AvatarSerializer, FavoriteSerializer,
                              RecipeCreateSerializer, RecipeSerializer,
                              ShoppingCartSerializer, TagSerializer)
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.db.models import Count, Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -28,8 +29,7 @@ User = get_user_model()
 @require_GET
 def short_url(request, pk):
     get_object_or_404(Recipe, pk=pk)
-    url = reverse('recipes', args=[pk])
-    return redirect(url)
+    return redirect(f'/recipes/{pk}/')
 
 
 class GramUserViewSet(UserViewSet):
@@ -187,6 +187,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         url_name='get-link',
     )
     def get_link(self, request, pk=None):
+        if not Recipe.objects.filter(pk=pk).exists():
+            raise ValidationError(f'Рецепт с ID {pk} не найден')
         recipe = self.get_object()
         short_link = reverse('short_url', args=[recipe.pk])
         return Response({'short-link': request.build_absolute_uri(short_link)},

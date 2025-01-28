@@ -7,11 +7,13 @@ from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
 class RecipeIngredientInLine(admin.TabularInline):
     model = RecipeIngredient
     extra = 0
+    min_num = 1
 
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = (
+        'id',
         'name',
         'cooking_time',
         'author',

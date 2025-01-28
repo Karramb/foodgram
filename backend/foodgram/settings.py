@@ -59,7 +59,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
 
-DATABASES = {
+SQLITE_DB = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+POSTGRES_DB = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('POSTGRES_DB', 'django'),
@@ -69,6 +76,8 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT', 5432)
     }
 }
+
+DATABASES = POSTGRES_DB if os.getenv('USE_POSTGRES_DB', 'False') == 'True' else SQLITE_DB
 
 AUTH_PASSWORD_VALIDATORS = [
     {
