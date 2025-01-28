@@ -7,7 +7,6 @@ from api.serializers import (AvatarSerializer, FavoriteSerializer,
                              RecipeCreateSerializer, RecipeSerializer,
                              ShoppingCartSerializer, TagSerializer)
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
 from django.db.models import Count, Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
