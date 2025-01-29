@@ -73,12 +73,6 @@ class GramUserSerializer(UserSerializer):
         )
         read_only_fields = ('id', 'is_subscribed')
 
-    def get_is_subscribed(self, obj):
-        request = self.context.get('request')
-        if request is None or request.user.is_anonymous:
-            return False
-        return request.user.follow.filter(author=obj).exists()
-
 
 class FavoriteSerializer(serializers.ModelSerializer):
     recipe = serializers.ReadOnlyField(source='recipe.id')
