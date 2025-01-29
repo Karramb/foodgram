@@ -44,8 +44,15 @@ class GramUserCreateSerializer(UserCreateSerializer):
             'first_name',
             'last_name',
             'password',
-            'id'
+            'id',
+            'is_subscribed'
         )
+
+    def get_is_subscribed(self, obj):
+        request = self.context.get('request')
+        if request is None or request.user.is_anonymous:
+            return False
+        return request.user.follow.filter(author=obj).exists()
 
 
 class GramUserSerializer(UserSerializer):
