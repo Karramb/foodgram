@@ -3,7 +3,7 @@ from api.pagination import LimitPagination
 from api.permissions import OwnerOrReadOnly
 from api.serializers import (AvatarSerializer, FavoriteSerializer,
                              FollowCreateSerializer, FollowSerializer,
-                             GramUserCreateSerializer, IngredientSerializer,
+                             GramUserSerializer, IngredientSerializer,
                              RecipeCreateSerializer, RecipeSerializer,
                              ShoppingCartSerializer, TagSerializer)
 from django.contrib.auth import get_user_model
@@ -29,7 +29,7 @@ class GramUserViewSet(UserViewSet):
     queryset = User.objects.all()
     pagination_class = LimitPagination
     permission_classes = (AllowAny,)
-    serializer_class = GramUserCreateSerializer
+    serializer_class = GramUserSerializer
 
     @action(
         methods=['put'],

@@ -48,12 +48,6 @@ class GramUserCreateSerializer(UserCreateSerializer):
             'is_subscribed'
         )
 
-    def get_is_subscribed(self, obj):
-        request = self.context.get('request')
-        if request is None or request.user.is_anonymous:
-            return False
-        return request.user.follow.filter(author=obj).exists()
-
 
 class GramUserSerializer(UserSerializer):
     avatar = Base64ImageField(required=False, allow_null=True)
@@ -72,6 +66,12 @@ class GramUserSerializer(UserSerializer):
             'is_subscribed'
         )
         read_only_fields = ('id', 'is_subscribed')
+
+    def get_is_subscribed(self, obj):
+        request = self.context.get('request')
+        if request is None or request.user.is_anonymous:
+            return False
+        return request.user.follow.filter(author=obj).exists()
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
