@@ -67,13 +67,13 @@ class GramUserViewSet(UserViewSet):
     )
     def subscribe(self, request, id):
         user = request.user
-        subscriber = get_object_or_404(User, id=id)
-        if user == subscriber:
+        author = get_object_or_404(User, id=id)
+        if user == author:
             return Response(
                 {'errors': ('Нельзя подписаться на самого себя.')},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        if Follow.objects.filter(user=user, subscriber=subscriber).exists():
+        if Follow.objects.filter(user=user, author=author).exists():
             return Response(
                 {'errors': 'Вы уже подписаны на этого пользователя.'},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -81,7 +81,7 @@ class GramUserViewSet(UserViewSet):
         serializer = FollowCreateSerializer(
             context={'request': request},
             data={
-                'subscriber': subscriber.id,
+                'author': author.id,
                 'user': user.id
             }
         )
@@ -89,9 +89,9 @@ class GramUserViewSet(UserViewSet):
         serializer.save()
         users_annotated = User.objects.annotate(
             recipes_count=Count('recipes'))
-        subscriber_annotated = users_annotated.filter(id=id).first()
+        author_annotated = users_annotated.filter(id=id).first()
         serializer = FollowSerializer(
-            subscriber_annotated,
+            author_annotated,
             context={'request': request}
         )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -99,11 +99,11 @@ class GramUserViewSet(UserViewSet):
     @subscribe.mapping.delete
     def delete_subscribe(self, request, id):
         user = request.user
-        subscriber = get_object_or_404(User, id=id)
-        delete_subscriber, _ = (
-            Follow.objects.filter(user=user, subscriber=subscriber).delete()
+        author = get_object_or_404(User, id=id)
+        delete_author, _ = (
+            Follow.objects.filter(user=user, author=author).delete()
         )
-        if delete_subscriber:
+        if delete_author:
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(
             {'detail': 'Вы не подписаны на этого пользователя.'},
@@ -120,10 +120,10 @@ class GramUserViewSet(UserViewSet):
     def get_subscriptions(self, request):
         user = request.user
         queryset = (
-            user.subscriber
-            .select_related("subscriber")
-            .prefetch_related("subscriber__recipes")
-            .annotate(recipes_count=Count("subscriber__recipes"))
+            user.follow
+            .select_related("author")
+            .prefetch_related("author__recipes")
+            .annotate(recipes_count=Count("author__recipes"))
         )
         pages = self.paginate_queryset(queryset)
         serializer = FollowSerializer(

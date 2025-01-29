@@ -70,7 +70,7 @@ class GramUserSerializer(UserSerializer):
         request = self.context.get('request')
         if request is None or request.user.is_anonymous:
             return False
-        return request.user.follow.filter(subscriber=obj).exists()
+        return request.user.follow.filter(author=obj).exists()
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
@@ -92,7 +92,7 @@ class FollowCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Follow
-        fields = ('user', 'subscriber')
+        fields = ('user', 'author')
 
 
 class FollowSerializer(serializers.ModelSerializer):
@@ -123,7 +123,7 @@ class FollowSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         user = self.context.get('request').user
-        return Follow.objects.filter(subscriber=obj, user=user).exists()
+        return Follow.objects.filter(author=obj, user=user).exists()
 
     def get_recipes(self, obj):
         request = self.context.get('request')
