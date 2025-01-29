@@ -284,5 +284,5 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 @require_GET
 def short_url(request, pk):
     if not Recipe.objects.filter(pk=pk).exists():
-        raise status.Http404(f'Рецепт с id "{pk}" не существует.')
+        raise status.Http404(f'Рецепт с id "{pk}"  не существует.')
     return redirect(f"/recipes/{pk}/")
