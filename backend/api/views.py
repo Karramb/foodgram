@@ -150,8 +150,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve', 'get-link'):
-            return RecipeCreateSerializer
-        return RecipeSerializer
+            return RecipeSerializer
+        return RecipeCreateSerializer
 
     @action(
         detail=False,
