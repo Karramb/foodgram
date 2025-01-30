@@ -161,13 +161,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
         url_name='download_shopping_cart',
     )
     def download_shopping_cart(self, request):
-        ingredients = (
-            RecipeIngredient.objects.filter(
-                recipe__shopping_cart__user=request.user)
-            .values('ingredient__name', 'ingredient__measurement_unit')
-            .order_by('ingredient__name').annotate(sum=Sum('amount'))
+        recipe_ids = request.user.shopping_cart.all().values_list(
+            'recipe',
+            flat=True
         )
-        shopping_cart = self.shopping_cart_in_file(ingredients)
+
+        queryset = (
+            RecipeIngredient.objects
+            .filter(recipe_id__in=recipe_ids)
+            .values('ingredient__name', 'ingredient__measurement_unit')
+            .annotate(sum=Sum('amount'))
+        )
+        shopping_cart = self.shopping_cart_in_file(queryset)
         return HttpResponse(shopping_cart, content_type='text/plain')
 
     @action(
