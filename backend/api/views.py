@@ -166,7 +166,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             RecipeIngredient.objects.filter(
                 recipe__shopping_cart__user=request.user)
             .values('ingredient__name', 'ingredient__measurement_unit')
-            .annotate(sum=Sum('amount'))
+            .order_by('ingredient__name').annotate(sum=Sum('amount'))
         )
         shopping_cart = self.shopping_cart_in_file(ingredients)
         return HttpResponse(shopping_cart, content_type='text/plain')
