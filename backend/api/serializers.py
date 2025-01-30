@@ -178,7 +178,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     )
     ingredients = RecipeIngredientCreateSerializer(
         many=True,
-        allow_empty=False,
         label='Ингридиенты',
     )
     image = Base64ImageField(
