@@ -99,6 +99,7 @@ class FollowCreateSerializer(serializers.ModelSerializer):
 class FollowSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField()
     recipes = serializers.SerializerMethodField()
+    recipes_count = serializers.IntegerField()
 
     class Meta:
         model = User
@@ -107,6 +108,7 @@ class FollowSerializer(serializers.ModelSerializer):
             'email',
             'first_name',
             'last_name',
+            'recipes_count',
             'id',
             'avatar',
             'is_subscribed',
