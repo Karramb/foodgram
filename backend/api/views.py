@@ -162,19 +162,28 @@ class RecipeViewSet(viewsets.ModelViewSet):
         url_name='download_shopping_cart',
     )
     def download_shopping_cart(self, request):
-        recipe_ids = request.user.shopping_cart.all().values_list(
-            'recipe',
-            flat=True
+        ingredients = RecipeIngredient.objects.filter(
+            recipe__shopping_cart__author=request.user
+        ).values(
+            'ingredient__name',
+            'ingredient__measurement_unit',
+        ).order_by(
+            'ingredient__name'
+        ).annotate(
+            total=Sum('amount')
         )
-
-        queryset = (
-            RecipeIngredient.objects
-            .filter(recipe_id__in=recipe_ids)
-            .values('ingredient__name', 'ingredient__measurement_unit')
-            .annotate(sum=Sum('amount'))
+        shopping_list = ['Список покупок\n']
+        shopping_list += [
+            f'{ingredient["ingredient__name"]} - '
+            f'{ingredient["total"]} '
+            f'({ingredient["ingredient__measurement_unit"]})\n'
+            for ingredient in ingredients
+        ]
+        response = HttpResponse(shopping_list, content_type='text/plain')
+        response['Content-Disposition'] = (
+            'attachment; filename="shopping_list.txt"'
         )
-        shopping_cart = self.shopping_cart_in_file(queryset)
-        return HttpResponse(shopping_cart, content_type='text/plain')
+        return response
 
     @action(
         detail=True,
