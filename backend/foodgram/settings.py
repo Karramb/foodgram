@@ -5,7 +5,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-vw_it)0k3mfvc3vztuc$kqikuh3=(n)k36@%!p6ujw7t-#at9b')
 
-DEBUG = os.getenv('DEBAG_MODE', 'False')
+# DEBUG = os.getenv('DEBAG_MODE', 'False')
+DEBUG = True
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1 localhost 84.201.140.59 food-gram.zapto.org').split()
 
@@ -26,7 +27,8 @@ INSTALLED_APPS = [
 
     'api.apps.ApiConfig',
     'recipes.apps.RecipesConfig',
-    'users.apps.UsersConfig'
+    'users.apps.UsersConfig',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -37,7 +39,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+
+INTERNAL_IPS = [
+    '127.0.0.1', '84.201.140.59', 'food-gram.zapto.org'
+] 
 
 ROOT_URLCONF = 'foodgram.urls'
 
