@@ -44,7 +44,7 @@ MIDDLEWARE = [
 
 INTERNAL_IPS = [
     '127.0.0.1', '84.201.140.59', 'food-gram.zapto.org'
-] 
+]
 
 ROOT_URLCONF = 'foodgram.urls'
 
