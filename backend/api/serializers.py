@@ -124,7 +124,7 @@ class FollowSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         user = self.context.get('request').user
-        return user.subscriber.exists()
+        return Follow.objects.filter(author=obj, user=user).exists()
 
     def get_recipes(self, obj):
         request = self.context.get('request')
@@ -199,11 +199,12 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     def set_ingredients(self, ingredients, recipe):
         ingredients_set = []
         for ingredient in ingredients:
-            ingredient_id = ingredient['id']
-            ingredient_in_obj = get_object_or_404(Ingredient, pk=ingredient_id)
-            amount = ingredient['amount']
+            ingredient_in_obj = get_object_or_404(Ingredient,
+                                                  pk=ingredient['id'])
             recipe_ingredient = RecipeIngredient(
-                ingredient=ingredient_in_obj, recipe=recipe, amount=amount
+                ingredient=ingredient_in_obj,
+                recipe=recipe,
+                amount=ingredient['amount']
             )
             ingredients_set.append(recipe_ingredient)
         RecipeIngredient.objects.bulk_create(ingredients_set)
@@ -239,7 +240,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         tags = data.get('tags')
         if not ingredients:
             raise serializers.ValidationError({
-                'ingredients': 'Добавьте ингредиент.'})
+                'ingredients': 'Добавьте хоть 1 ингредиент.'})
         if not tags:
             raise serializers.ValidationError({
                 'tags': 'Добавьте тег.'})
@@ -260,6 +261,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     def validate_ingredients(self, value):
         if value is None:
             raise serializers.ValidationError('Добавьте ингридиенты')
+        return value
 
 
 class RecipeSerializer(serializers.ModelSerializer):
