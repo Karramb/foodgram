@@ -119,8 +119,9 @@ class GramUserViewSet(UserViewSet):
     )
     def get_subscriptions(self, request):
         user = request.user
-        queryset = User.objects.filter(follow__user=user).order_by(
-            'username').annotate(recipes_count=Count('recipes'))
+        queryset = User.objects.filter(subscriber__user=user).annotate(
+            recipes_count=Count('recipes')
+        )
         pages = self.paginate_queryset(queryset)
         serializer = FollowSerializer(
             pages,
