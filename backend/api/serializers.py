@@ -139,7 +139,7 @@ class FollowSerializer(serializers.ModelSerializer):
             many=True,
             context={'request': request},
         ).data
-    
+
     def validate(self, data):
         if data['follow'] == data['subscriber']:
             raise serializers.ValidationError(
