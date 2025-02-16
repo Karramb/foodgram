@@ -77,10 +77,11 @@ class Follow(models.Model):
                 name='check self-subscribe',
             ),
         ]
-    
+
     def clean(self):
         if self.user == self.subscriber:
-            raise serializers.ValidationError('Вы не можете подписаться на самого себя')
+            raise serializers.ValidationError(
+                'Вы не можете подписаться на самого себя')
 
     def __str__(self):
         return f'{self.user} подписан на {self.author}'
