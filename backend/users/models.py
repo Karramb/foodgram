@@ -79,7 +79,7 @@ class Follow(models.Model):
         ]
 
     def clean(self):
-        if self.user == self.subscriber:
+        if self.user == self.author:
             raise serializers.ValidationError(
                 'Вы не можете подписаться на самого себя')
 
