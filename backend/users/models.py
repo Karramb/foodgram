@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from rest_framework import serializers
 from users.constants import MAX_LENGTH_FOR_EMAIL, MAX_LENGTH_FOR_FIELDS
 from users.validators import validate_username
 
