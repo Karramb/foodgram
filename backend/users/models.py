@@ -72,10 +72,6 @@ class Follow(models.Model):
                 fields=['user', 'author'],
                 name='unique subscribe'
             ),
-            # models.CheckConstraint(
-            #     check=~models.Q(user=models.F('author')),
-            #     name='check self-subscribe',
-            # ),
         ]
 
     def __str__(self):
