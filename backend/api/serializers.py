@@ -45,7 +45,6 @@ class GramUserCreateSerializer(UserCreateSerializer):
             'last_name',
             'password',
             'id',
-            'is_subscribed'
         )
 
 

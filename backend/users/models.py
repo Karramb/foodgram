@@ -72,16 +72,11 @@ class Follow(models.Model):
                 fields=['user', 'author'],
                 name='unique subscribe'
             ),
-            models.CheckConstraint(
-                check=~models.Q(user=models.F('author')),
-                name='check self-subscribe',
-            ),
+            # models.CheckConstraint(
+            #     check=~models.Q(user=models.F('author')),
+            #     name='check self-subscribe',
+            # ),
         ]
-
-    def clean(self):
-        if self.user == self.author:
-            raise serializers.ValidationError(
-                'Вы не можете подписаться на самого себя')
 
     def __str__(self):
         return f'{self.user} подписан на {self.author}'
