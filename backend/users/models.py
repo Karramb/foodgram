@@ -80,4 +80,4 @@ class Follow(models.Model):
     def clean(self):
         if self.user == self.author:
             raise ValidationError(
-                'Вы не можете подписаться на самого себя')
+                'Вы не можете подписаться на самого себя ')
