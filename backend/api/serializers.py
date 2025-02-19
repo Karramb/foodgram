@@ -94,11 +94,6 @@ class FollowCreateSerializer(serializers.ModelSerializer):
         model = Follow
         fields = ('user', 'author')
 
-    def validate(self, data):
-        if data['follow'] == data['subscriber']:
-            raise serializers.ValidationError(
-                "Пользователь не может подписаться на самого себя.")
-
 
 class FollowSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField()
@@ -138,11 +133,6 @@ class FollowSerializer(serializers.ModelSerializer):
             many=True,
             context={'request': request},
         ).data
-
-    def validate(self, data):
-        if data['follow'] == data['subscriber']:
-            raise serializers.ValidationError(
-                "Пользователь не может подписаться на самого себя.")
 
 
 class IngredientSerializer(serializers.ModelSerializer):
