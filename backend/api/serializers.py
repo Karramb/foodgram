@@ -63,6 +63,14 @@ class FavoriteSerializer(serializers.ModelSerializer):
         model = Favorite
         fields = ('recipe', 'user')
 
+    def validate(self, data):
+        user = data.get('user')
+        recipe = data.get('recipe')
+        if Favorite.objects.filter(recipe=recipe, user=user).exists():
+            raise ValidationError(
+                f'"{recipe.name}" уже добавлен в избранное')
+        return data
+
     def to_representation(self, instance):
         return ShortRecipeSerializer(
             instance.recipe,
@@ -301,6 +309,14 @@ class ShoppingCartSerializer(FavoriteSerializer):
 
     class Meta(FavoriteSerializer.Meta):
         model = ShoppingCart
+
+    def validate(self, data):
+        user = data.get('user')
+        recipe = data.get('recipe')
+        if ShoppingCart.objects.filter(recipe=recipe, user=user).exists():
+            raise ValidationError(
+                f'"{recipe.name}" уже в списке покупок')
+        return data
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):

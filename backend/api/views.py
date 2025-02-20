@@ -193,11 +193,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def favorite(self, request, pk):
         user = request.user
         recipe = get_object_or_404(Recipe, pk=pk)
-        if Favorite.objects.filter(recipe=recipe, user=user).exists():
-            return Response(
-                {'detail': (f'"{recipe.name}" уже добавлен в избранное')},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
         serializer = FavoriteSerializer(
             data={
                 'recipe': recipe,
@@ -232,11 +227,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def shopping_cart(self, request, pk):
         user = request.user
         recipe = get_object_or_404(Recipe, pk=pk)
-        if ShoppingCart.objects.filter(recipe=recipe, user=user).exists():
-            return Response(
-                {'detail': f'"{recipe.name}" уже в списке покупок'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
         serializer = ShoppingCartSerializer(
             data={
                 'recipe': recipe,
