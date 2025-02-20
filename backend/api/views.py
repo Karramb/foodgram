@@ -183,17 +183,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response({'short-link': request.build_absolute_uri(short_link)},
                         status=status.HTTP_200_OK)
 
-    @action(
-        detail=True,
-        methods=('post',),
-        permission_classes=(IsAuthenticated,),
-        url_path='favorite',
-        url_name='favorite',
-    )
-    def favorite(self, request, pk):
-        user = request.user
+    def create(self, user, obj_ser, pk):
         recipe = get_object_or_404(Recipe, pk=pk)
-        serializer = FavoriteSerializer(
+        serializer = obj_ser(
             data={
                 'recipe': recipe,
                 'user': user
@@ -202,6 +194,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save(recipe=recipe, user=user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @action(
+        detail=True,
+        methods=('post',),
+        permission_classes=(IsAuthenticated,),
+        url_path='favorite',
+        url_name='favorite',
+    )
+    def favorite(self, request, pk):
+        return self.create(request.user, FavoriteSerializer, pk)
 
     @favorite.mapping.delete
     def delete_favorite(self, request, pk):
@@ -225,17 +227,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         url_name='shopping_cart',
     )
     def shopping_cart(self, request, pk):
-        user = request.user
-        recipe = get_object_or_404(Recipe, pk=pk)
-        serializer = ShoppingCartSerializer(
-            data={
-                'recipe': recipe,
-                'user': user
-            }
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save(recipe=recipe, user=user)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return self.create(request.user, ShoppingCartSerializer, pk)
 
     @shopping_cart.mapping.delete
     def delete_shopping_cart(self, request, pk):
