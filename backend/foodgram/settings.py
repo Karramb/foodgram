@@ -127,7 +127,6 @@ DJOSER = {
     },
     'SERIALIZERS': {
         'user': 'api.serializers.GramUserSerializer',
-        'user_create': 'api.serializers.GramUserCreateSerializer',
         'current_user': 'api.serializers.GramUserSerializer',
     }
 }

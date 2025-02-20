@@ -6,6 +6,13 @@ from users.validators import validate_username
 
 
 class GramUser(AbstractUser):
+    REQUIRED_FIELDS = (
+        'first_name',
+        'last_name',
+        'username',
+    )
+    USERNAME_FIELD = 'email'
+
     username = models.CharField(
         max_length=MAX_LENGTH_FOR_FIELDS,
         unique=True,
@@ -31,14 +38,6 @@ class GramUser(AbstractUser):
         verbose_name='Фото профиля',
         upload_to='media/users_avatars/'
     )
-
-    REQUIRED_FIELDS = [
-        'first_name',
-        'last_name',
-        'password',
-        'username'
-    ]
-    USERNAME_FIELD = 'email'
 
     class Meta:
         ordering = ('username',)

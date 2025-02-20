@@ -32,7 +32,7 @@ class GramUserViewSet(UserViewSet):
     serializer_class = GramUserSerializer
 
     @action(
-        methods=['put'],
+        methods=('put',),
         detail=False,
         permission_classes=(IsAuthenticated, OwnerOrReadOnly),
         url_path='me/avatar',
@@ -52,7 +52,7 @@ class GramUserViewSet(UserViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
-        methods=['get'],
+        methods=('get',),
         detail=False,
         permission_classes=(IsAuthenticated,)
     )
@@ -62,22 +62,12 @@ class GramUserViewSet(UserViewSet):
 
     @action(
         detail=True,
-        methods=['post'],
+        methods=('post',),
         permission_classes=(IsAuthenticated,)
     )
     def subscribe(self, request, id):
         user = request.user
         author = get_object_or_404(User, id=id)
-        if user == author:
-            return Response(
-                {'errors': ('Нельзя подписаться на самого себя.')},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        if Follow.objects.filter(user=user, author=author).exists():
-            return Response(
-                {'errors': 'Вы уже подписаны на этого пользователя.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
         serializer = FollowCreateSerializer(
             context={'request': request},
             data={
@@ -112,7 +102,7 @@ class GramUserViewSet(UserViewSet):
 
     @action(
         detail=False,
-        methods=['get'],
+        methods=('get',),
         permission_classes=(IsAuthenticated,),
         url_name='subscriptions',
         url_path='subscriptions',
@@ -121,7 +111,7 @@ class GramUserViewSet(UserViewSet):
         user = request.user
         queryset = User.objects.filter(subscriber__user=user).annotate(
             recipes_count=Count('recipes')
-        )
+        ).order_by('username')
         pages = self.paginate_queryset(queryset)
         serializer = FollowSerializer(
             pages,
@@ -157,7 +147,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=False,
-        methods=['get'],
+        methods=('get',),
         permission_classes=(IsAuthenticated,),
         url_path='download_shopping_cart',
         url_name='download_shopping_cart',
@@ -173,13 +163,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ).annotate(
             total=Sum('amount')
         )
-        shopping_list = ['Список покупок\n']
-        shopping_list += [
-            f'{ingredient["ingredient__name"]} - '
-            f'{ingredient["total"]} '
-            f'({ingredient["ingredient__measurement_unit"]})\n'
-            for ingredient in ingredients
-        ]
+        shopping_list = self.shopping_cart_in_file(ingredients)
         response = HttpResponse(shopping_list, content_type='text/plain')
         response['Content-Disposition'] = (
             'attachment; filename="shopping_list.txt"'
@@ -188,7 +172,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=True,
-        methods=['get'],
+        methods=('get',),
         permission_classes=(AllowAny,),
         url_path='get-link',
         url_name='get-link',
@@ -201,7 +185,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=True,
-        methods=['post'],
+        methods=('post',),
         permission_classes=(IsAuthenticated,),
         url_path='favorite',
         url_name='favorite',
@@ -240,7 +224,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=True,
-        methods=['post'],
+        methods=('post',),
         permission_classes=(IsAuthenticated,),
         url_path='shopping_cart',
         url_name='shopping_cart',
@@ -296,4 +280,4 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 def short_url(request, pk):
     if not Recipe.objects.filter(pk=pk).exists():
         raise status.Http404(f'Рецепт с  id "{pk}"  не существует.')
-    return redirect(f"/recipes/{pk}/")
+    return redirect(f'/recipes/{pk}/')

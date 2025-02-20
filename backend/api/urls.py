@@ -13,7 +13,6 @@ router_v1.register(r'tags', TagViewSet, basename='tags')
 router_v1.register(r'users', GramUserViewSet, basename='users')
 
 urls = [
-    path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
     path('docs/', TemplateView.as_view(template_name='docs/redoc.html'),
          name='redoc'),

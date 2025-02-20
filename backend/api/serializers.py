@@ -1,12 +1,14 @@
 import base64
 
+from django.forms import ValidationError
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
-from djoser.serializers import UserCreateSerializer, UserSerializer
+from djoser.serializers import UserSerializer
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             ShoppingCart, Tag)
-from rest_framework import serializers
+from rest_framework import serializers, status
+from rest_framework.response import Response
 from users.constants import MAX_LENGTH_FOR_FIELDS
 from users.models import Follow
 
@@ -28,24 +30,6 @@ class AvatarSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('avatar',)
-
-
-class GramUserCreateSerializer(UserCreateSerializer):
-    password = serializers.CharField(
-        max_length=MAX_LENGTH_FOR_FIELDS,
-        write_only=True
-    )
-
-    class Meta:
-        model = User
-        fields = (
-            'username',
-            'email',
-            'first_name',
-            'last_name',
-            'password',
-            'id',
-        )
 
 
 class GramUserSerializer(UserSerializer):
@@ -93,6 +77,19 @@ class FollowCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Follow
         fields = ('user', 'author')
+
+    def validate(self, data):
+        user = data.get('user')
+        author = data.get('author')
+        if user == author:
+            raise ValidationError(
+                {'errors': ('Нельзя подписаться на самого себя.')},
+            )
+        if Follow.objects.filter(user=user, author=author).exists():
+            raise ValidationError(
+                {'errors': 'Вы уже подписаны на этого пользователя.'},
+            )
+        return data
 
 
 class FollowSerializer(serializers.ModelSerializer):
