@@ -8,7 +8,6 @@ from api.serializers import (AvatarSerializer, FavoriteSerializer,
                              ShoppingCartSerializer, TagSerializer)
 from django.contrib.auth import get_user_model
 from django.db.models import Count, Sum
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.views.decorators.http import require_GET
 from django_filters.rest_framework import DjangoFilterBackend
