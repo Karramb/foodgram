@@ -1,15 +1,13 @@
 import base64
 
-from django.forms import ValidationError
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
+from django.forms import ValidationError
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserSerializer
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             ShoppingCart, Tag)
-from rest_framework import serializers, status
-from rest_framework.response import Response
-from users.constants import MAX_LENGTH_FOR_FIELDS
+from rest_framework import serializers
 from users.models import Follow
 
 User = get_user_model()
