@@ -13,6 +13,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views.decorators.http import require_GET
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
+from fastapi.responses import FileResponse
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             ShoppingCart, Tag)
 from rest_framework import status, viewsets
@@ -164,7 +165,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             total=Sum('amount')
         )
         shopping_list = self.shopping_cart_in_file(ingredients)
-        response = HttpResponse(shopping_list, content_type='text/plain')
+        response = FileResponse(shopping_list, content_type='text/plain')
         response['Content-Disposition'] = (
             'attachment; filename="shopping_list.txt"'
         )

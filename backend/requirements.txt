@@ -4,6 +4,7 @@ django-admin-autocomplete-filter==0.7.1
 django-debug-toolbar==3.8.1
 djangorestframework==3.12.4
 djoser==2.1.0
+FastAPI==0.112.0
 webcolors==1.11.1
 psycopg2-binary==2.9.3
 Pillow==9.0.0
