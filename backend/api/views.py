@@ -263,11 +263,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @staticmethod
     def shopping_cart_in_file(ingredients):
-        return '\n'.join(
-            f'{ingredient["ingredient__name"]} - {ingredient["sum"]} '
-            f'({ingredient["ingredient__measurement_unit"]})'
+        shopping_list = ['Список покупок\n']
+        shopping_list += [
+            f'{ingredient["ingredient__name"]} - '
+            f'{ingredient["total"]} '
+            f'({ingredient["ingredient__measurement_unit"]})\n'
             for ingredient in ingredients
-        )
+        ]
+        return shopping_list
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
