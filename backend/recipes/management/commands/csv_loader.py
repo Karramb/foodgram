@@ -18,7 +18,7 @@ class Command(BaseCommand):
                 encoding='utf-8',
         ) as file:
             reader = csv.reader(file)
-            data=[]
+            data = []
 
             for row in reader:
                 name_csv = 0
