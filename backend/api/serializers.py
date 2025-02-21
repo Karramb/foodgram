@@ -1,3 +1,4 @@
+from api.constants import LIMIT_SIZE
 from django.contrib.auth import get_user_model
 from django.forms import ValidationError
 from djoser.serializers import UserSerializer
@@ -6,7 +7,6 @@ from recipes.constants import INGREDIENT_AMOUNT_MAX, INGREDIENT_AMOUNT_MIN
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             ShoppingCart, Tag)
 from rest_framework import serializers
-from api.constants import LIMIT_SIZE
 from users.models import Follow
 
 User = get_user_model()
