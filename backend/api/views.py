@@ -207,17 +207,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @favorite.mapping.delete
     def delete_favorite(self, request, pk):
-        user = request.user
-        recipe = get_object_or_404(Recipe, pk=pk)
-        deleted_objects_number, _ = (
-            Favorite.objects.filter(recipe=recipe, user=user).delete()
-        )
-        if deleted_objects_number:
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(
-            {'detail': 'Рецепта нет в избранных.'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        self.delete_obj(self, Favorite, pk)
 
     @action(
         detail=True,
@@ -231,15 +221,19 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @shopping_cart.mapping.delete
     def delete_shopping_cart(self, request, pk):
-        user = request.user
+        self.delete_obj(self, ShoppingCart, pk)
+
+    @staticmethod
+    def delete_obj(self, model, pk):
+        user = self.request.user
         recipe = get_object_or_404(Recipe, pk=pk)
         deleted_object, _ = (
-            ShoppingCart.objects.filter(recipe=recipe, user=user).delete()
+            model.objects.filter(recipe=recipe, user=user).delete()
         )
         if deleted_object:
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(
-            {'detail': 'Рецепта нет в списке покупок.'},
+            {'detail': 'Рецепта нет в списке.'},
             status=status.HTTP_400_BAD_REQUEST
         )
 
