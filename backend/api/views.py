@@ -2,7 +2,7 @@ from api.filters import IngredientFilter, RecipeFilter
 from api.pagination import LimitPagination
 from api.permissions import OwnerOrReadOnly
 from api.serializers import (AvatarSerializer, FavoriteSerializer,
-                             FollowCreateSerializer, FollowSerializer,
+                             FollowCreateSerializer, FollowIssuanceSerializer,
                              GramUserSerializer, IngredientSerializer,
                              RecipeCreateSerializer, RecipeSerializer,
                              ShoppingCartSerializer, TagSerializer)
@@ -80,7 +80,7 @@ class GramUserViewSet(UserViewSet):
         users_annotated = User.objects.annotate(
             recipes_count=Count('recipes'))
         author_annotated = users_annotated.filter(id=id).first()
-        serializer = FollowSerializer(
+        serializer = FollowIssuanceSerializer(
             author_annotated,
             context={'request': request}
         )
@@ -113,7 +113,7 @@ class GramUserViewSet(UserViewSet):
             recipes_count=Count('recipes')
         ).order_by('username')
         pages = self.paginate_queryset(queryset)
-        serializer = FollowSerializer(
+        serializer = FollowIssuanceSerializer(
             pages,
             many=True,
             context={'request': request}
