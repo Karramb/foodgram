@@ -183,7 +183,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response({'short-link': request.build_absolute_uri(short_link)},
                         status=status.HTTP_200_OK)
 
-    def create(self, user, obj_ser, pk):
+    def create_obj(self, user, obj_ser, pk):
         recipe = get_object_or_404(Recipe, pk=pk)
         serializer = obj_ser(
             data={
@@ -203,7 +203,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         url_name='favorite',
     )
     def favorite(self, request, pk):
-        return self.create(request.user, FavoriteSerializer, pk)
+        return self.create_obj(request.user, FavoriteSerializer, pk)
 
     @favorite.mapping.delete
     def delete_favorite(self, request, pk):
@@ -227,7 +227,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         url_name='shopping_cart',
     )
     def shopping_cart(self, request, pk):
-        return self.create(request.user, ShoppingCartSerializer, pk)
+        return self.create_obj(request.user, ShoppingCartSerializer, pk)
 
     @shopping_cart.mapping.delete
     def delete_shopping_cart(self, request, pk):

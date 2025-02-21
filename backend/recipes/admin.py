@@ -17,7 +17,9 @@ class RecipeAdmin(admin.ModelAdmin):
         'name',
         'cooking_time',
         'author',
-        'added_in_favorite'
+        'added_in_favorite',
+        'get_ingredients',
+        'get_tags'
     )
     search_fields = (
         'author__username',
@@ -32,7 +34,15 @@ class RecipeAdmin(admin.ModelAdmin):
         queryset = queryset.annotate(added_in_favorite=Count('favorite'))
         return queryset
 
-    @admin.decorators.display(description='В избранном')
+    @admin.display(description='Ингредиенты')
+    def get_ingredients(self, obj):
+        return ",\n".join(str(p) for p in obj.ingredients.all())
+
+    @admin.display(description='Тэги')
+    def get_tags(self, obj):
+        return ",\n".join(str(p) for p in obj.tags.all())
+
+    @admin.display(description='В избранном')
     def added_in_favorite(self, obj):
         return obj.added_in_favorite
 
