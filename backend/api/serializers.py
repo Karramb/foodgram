@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.core.files.base import ContentFile
 from django.forms import ValidationError
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserSerializer
