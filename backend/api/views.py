@@ -9,12 +9,12 @@ from api.serializers import (AvatarSerializer, FavoriteSerializer,
 from django.contrib.auth import get_user_model
 from django.db.models import Count, Sum
 from django.http import FileResponse
-from django.shortcuts import get_object_or_404, redirect
-from django.views.decorators.http import require_GET
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             ShoppingCart, Tag)
+from recipes.views import short_url
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -253,10 +253,3 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (OwnerOrReadOnly,)
-
-
-@require_GET
-def short_url(request, pk):
-    if not Recipe.objects.filter(pk=pk).exists():
-        raise status.Http404(f'Рецепт с  id "{pk}"  не существует.')
-    return redirect(f'/recipes/{pk}/')
