@@ -207,7 +207,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @favorite.mapping.delete
     def delete_favorite(self, request, pk):
-        self.delete_obj(self, Favorite, pk)
+        return self.delete_obj(self, Favorite, pk)
 
     @action(
         detail=True,
@@ -221,7 +221,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @shopping_cart.mapping.delete
     def delete_shopping_cart(self, request, pk):
-        self.delete_obj(self, ShoppingCart, pk)
+        return self.delete_obj(self, ShoppingCart, pk)
 
     @staticmethod
     def delete_obj(self, model, pk):
