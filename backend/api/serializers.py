@@ -6,6 +6,7 @@ from recipes.constants import INGREDIENT_AMOUNT_MAX, INGREDIENT_AMOUNT_MIN
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             ShoppingCart, Tag)
 from rest_framework import serializers
+from api.constants import LIMIT_SIZE
 from users.models import Follow
 
 User = get_user_model()
@@ -115,9 +116,16 @@ class FollowIssuanceSerializer(UserSerializer):
 
     def get_recipes(self, obj):
         request = self.context['request']
-        limit = request.GET.get('recipes_limit', 6)
+        if "recipes_limit" in request.GET:
+            try:
+                limit = int(request.GET["recipes_limit"])
+            except ValueError:
+                print('Лимит не является числом')
+        else:
+            limit = LIMIT_SIZE
+
         return ShortRecipeSerializer(
-            Recipe.objects.filter(author=obj)[:int(limit)],
+            obj.recipes.all()[:int(limit)],
             many=True,
             context=self.context
         ).data
