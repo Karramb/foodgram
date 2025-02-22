@@ -1,5 +1,6 @@
 from api.constants import LIMIT_SIZE
 from django.contrib.auth import get_user_model
+from django.db import transaction
 from django.forms import ValidationError
 from djoser.serializers import UserSerializer
 from drf_extra_fields.fields import Base64ImageField
@@ -7,7 +8,6 @@ from recipes.constants import INGREDIENT_AMOUNT_MAX, INGREDIENT_AMOUNT_MIN
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             ShoppingCart, Tag)
 from rest_framework import serializers
-
 from users.models import Follow
 
 User = get_user_model()
@@ -228,6 +228,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         )
         return serializer.data
 
+    @transaction.atomic
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients', None)
         tags = validated_data.pop('tags')
@@ -246,7 +247,9 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         ingredients = data.get('ingredients')
+        print(ingredients)
         tags = data.get('tags')
+        print(tags)
         if not ingredients:
             raise serializers.ValidationError({
                 'ingredients': 'Добавьте хоть 1 ингредиент.'})
@@ -255,8 +258,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 'tags': 'Добавьте тег.'})
         if len(tags) != len(set(tags)):
             raise serializers.ValidationError('Теги дублируются.')
-        if len(ingredients) != len(set(ingredients)):
-            raise serializers.ValidationError('Ингредиенты дублируются.')
         return data
 
 
