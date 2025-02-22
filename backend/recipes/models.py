@@ -164,7 +164,7 @@ class ShoppingCartFavorite(models.Model):
         )
 
     def __str__(self):
-        return (f'"{self.recipe}" добавлен в "{self._meta.verbose_name}" у ',
+        return (f'"{self.recipe}" добавлен в "{self._meta.verbose_name}" у '
                 f'"{self.user}"')
 
 

@@ -109,7 +109,7 @@ class GramUserViewSet(UserViewSet):
     )
     def get_subscriptions(self, request):
         user = request.user
-        queryset = User.objects.filter(subscriber__user=user).annotate(
+        queryset = User.objects.filter(following__user=user).annotate(
             recipes_count=Count('recipes')
         ).order_by('username')
         pages = self.paginate_queryset(queryset)
