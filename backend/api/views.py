@@ -1,3 +1,16 @@
+from django.contrib.auth import get_user_model
+from django.db.models import Count, Sum
+from django.http import FileResponse
+from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+from djoser.views import UserViewSet
+from recipes.views import short_url
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
+
 from api.filters import IngredientFilter, RecipeFilter
 from api.pagination import LimitPagination
 from api.permissions import OwnerOrReadOnly
@@ -6,21 +19,10 @@ from api.serializers import (AvatarSerializer, FavoriteSerializer,
                              GramUserSerializer, IngredientSerializer,
                              RecipeCreateSerializer, RecipeSerializer,
                              ShoppingCartSerializer, TagSerializer)
-from django.contrib.auth import get_user_model
-from django.db.models import Count, Sum
-from django.http import FileResponse
-from django.shortcuts import get_object_or_404
-from django_filters.rest_framework import DjangoFilterBackend
-from djoser.views import UserViewSet
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             ShoppingCart, Tag)
-from recipes.views import short_url
-from rest_framework import status, viewsets
-from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.reverse import reverse
 from users.models import Follow
+
 
 User = get_user_model()
 

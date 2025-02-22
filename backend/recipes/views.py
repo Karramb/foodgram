@@ -1,8 +1,8 @@
 from django.shortcuts import redirect
 from django.views.decorators.http import require_GET
-from recipes.models import Recipe
 from rest_framework import status
 
+from recipes.models import Recipe
 
 @require_GET
 def short_url(request, pk):
