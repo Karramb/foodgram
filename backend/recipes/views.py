@@ -4,6 +4,7 @@ from rest_framework import status
 
 from recipes.models import Recipe
 
+
 @require_GET
 def short_url(request, pk):
     if not Recipe.objects.filter(pk=pk).exists():
