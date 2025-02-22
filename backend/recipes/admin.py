@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.db.models import Count
+from django.utils.safestring import mark_safe
+
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             ShoppingCart, Tag)
 
@@ -19,7 +21,8 @@ class RecipeAdmin(admin.ModelAdmin):
         'author',
         'added_in_favorite',
         'get_ingredients',
-        'get_tags'
+        'get_tags',
+        'mini_image'
     )
     search_fields = (
         'author__username',
@@ -46,6 +49,9 @@ class RecipeAdmin(admin.ModelAdmin):
     def added_in_favorite(self, obj):
         return obj.added_in_favorite
 
+    @admin.display(description='В избранном')
+    def mini_image(self, obj):
+        return mark_safe(f'<img src={obj.image.url} width="80" height="60">')
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
