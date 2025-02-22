@@ -53,6 +53,7 @@ class RecipeAdmin(admin.ModelAdmin):
     def mini_image(self, obj):
         return mark_safe(f'<img src={obj.image.url} width="80" height="60">')
 
+
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = (
