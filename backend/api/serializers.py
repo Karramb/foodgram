@@ -38,7 +38,7 @@ class GramUserSerializer(UserSerializer):
     def get_is_subscribed(self, obj):
         request = self.context['request']
         return (request and request.user.is_authenticated
-                and request.user.follower.filter(author=obj).exists())
+                and request.user.subscriptionuser.filter(author=obj).exists())
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):
@@ -49,8 +49,6 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
 
 
 class FavoriteShoppingCartSerializers(serializers.ModelSerializer):
-    recipe = serializers.ReadOnlyField(source='recipe.id')
-    user = serializers.ReadOnlyField(source='user.id')
 
     class Meta:
         fields = ('recipe', 'user')
@@ -58,7 +56,6 @@ class FavoriteShoppingCartSerializers(serializers.ModelSerializer):
     def validate(self, data):
         user = data.get('user')
         recipe = data.get('recipe')
-        print(data)
         if self.Meta.model.objects.filter(recipe=recipe, user=user).exists():
             raise ValidationError(
                 f'"{recipe.name}" уже добавлен в {self._meta.verbose_name}')
@@ -85,7 +82,7 @@ class FollowCreateSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         serializer = FollowIssuanceSerializer(
-            instance,
+            instance.author,
             context=self.context
         )
         return serializer.data
@@ -104,7 +101,7 @@ class FollowCreateSerializer(serializers.ModelSerializer):
         return data
 
 
-class FollowIssuanceSerializer(UserSerializer):
+class FollowIssuanceSerializer(GramUserSerializer):
     is_subscribed = serializers.SerializerMethodField()
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.IntegerField(default=0)
@@ -125,17 +122,13 @@ class FollowIssuanceSerializer(UserSerializer):
             'id'
         )
 
-    def get_is_subscribed(self, obj):
-        user = self.context.get('request').user
-        return user.following.exists()
-
     def get_recipes(self, obj):
         request = self.context['request']
         if "recipes_limit" in request.GET:
             try:
                 limit = int(request.GET["recipes_limit"])
             except ValueError:
-                print('Лимит не является числом')
+                pass
         else:
             limit = LIMIT_SIZE
 
@@ -211,7 +204,8 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             'text',
         )
 
-    def set_ingredients(self, ingredients, recipe):
+    @staticmethod
+    def set_ingredients(ingredients, recipe):
         ingredients_set = []
         for ingredient in ingredients:
             recipe_ingredient = RecipeIngredient(
@@ -248,9 +242,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         ingredients = data.get('ingredients')
-        print(ingredients)
         tags = data.get('tags')
-        print(tags)
         if not ingredients:
             raise serializers.ValidationError({
                 'ingredients': 'Добавьте хоть 1 ингредиент.'})
@@ -259,6 +251,11 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 'tags': 'Добавьте тег.'})
         if len(tags) != len(set(tags)):
             raise serializers.ValidationError('Теги дублируются.')
+        ingredient_list = []
+        for ingredient in ingredients:
+            ingredient_list.append(ingredient['ingredient']['id'])
+        if len(ingredient_list) != len(set(ingredient_list)):
+            raise serializers.ValidationError('Ингредиенты дублируются.')
         return data
 
 

@@ -17,7 +17,7 @@ class GramUser(AbstractUser):
     username = models.CharField(
         max_length=MAX_LENGTH_FOR_FIELDS,
         unique=True,
-        validators=[validate_username],
+        validators=(validate_username,),
         verbose_name='Никнейм'
     )
     email = models.EmailField(
@@ -53,13 +53,13 @@ class Follow(models.Model):
     user = models.ForeignKey(
         GramUser,
         on_delete=models.CASCADE,
-        related_name='follower',
+        related_name='subscriptionuser',
         verbose_name='Пользователь',
     )
     author = models.ForeignKey(
         GramUser,
         on_delete=models.CASCADE,
-        related_name='following',
+        related_name='subscriptiontheauthor',
         verbose_name='Автор',
     )
 

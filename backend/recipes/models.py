@@ -29,7 +29,7 @@ class Tag(models.Model):
         verbose_name_plural = 'Теги'
 
     def __str__(self):
-        return self.name
+        return self.name[:MAX_LEN_STR_DEF]
 
 
 class Ingredient(models.Model):
@@ -156,12 +156,16 @@ class ShoppingCartFavorite(models.Model):
         verbose_name='Рецепт',
     )
 
+    @property
+    def name_model(self):
+        return self.__class__.__name__
+
     class Meta:
         abstract = True
         constraints = (
             models.UniqueConstraint(
                 fields=('user', 'recipe'),
-                name='unique recipe'),
+                name='unique recipe in %(class)s'),
         )
 
     def __str__(self):
@@ -170,7 +174,7 @@ class ShoppingCartFavorite(models.Model):
 
 
 class ShoppingCart(ShoppingCartFavorite):
-    class Meta:
+    class Meta(ShoppingCartFavorite.Meta):
         default_related_name = 'shopping_cart'
         verbose_name = 'список покупок'
         verbose_name_plural = 'Списки покупок'
@@ -178,7 +182,7 @@ class ShoppingCart(ShoppingCartFavorite):
 
 class Favorite(ShoppingCartFavorite):
 
-    class Meta:
+    class Meta(ShoppingCartFavorite.Meta):
         default_related_name = 'favorite'
         verbose_name = 'избранное'
         verbose_name_plural = 'Избранное'

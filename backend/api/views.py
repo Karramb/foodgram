@@ -79,13 +79,6 @@ class GramUserViewSet(UserViewSet):
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        users_annotated = User.objects.annotate(
-            recipes_count=Count('recipes'))
-        author_annotated = users_annotated.filter(id=id).first()
-        serializer = FollowIssuanceSerializer(
-            author_annotated,
-            context={'request': request}
-        )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @subscribe.mapping.delete
@@ -111,7 +104,8 @@ class GramUserViewSet(UserViewSet):
     )
     def get_subscriptions(self, request):
         user = request.user
-        queryset = User.objects.filter(following__user=user).annotate(
+        queryset = User.objects.filter(
+            subscriptiontheauthor__user=user).annotate(
             recipes_count=Count('recipes')
         ).order_by('username')
         pages = self.paginate_queryset(queryset)

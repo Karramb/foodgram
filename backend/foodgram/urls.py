@@ -1,9 +1,10 @@
-from api.urls import urls as api_urls
-from api.views import short_url
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+
+from api.urls import urls as api_urls
+from api.views import short_url
 
 urlpatterns = [
     path('admin/', admin.site.urls),

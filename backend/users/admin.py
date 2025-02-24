@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
+
 from recipes.models import Recipe
 from users.models import Follow
 
@@ -15,11 +16,11 @@ class GramUserAdmin(UserAdmin):
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
     search_fields = ('username', 'first_name', 'last_name', 'email')
 
-    @admin.display(description="Кол-во рецептов")
+    @admin.display(description='Кол-во рецептов')
     def recipes_count(self, obj):
         return Recipe.objects.filter(author=obj).count()
 
-    @admin.display(description="Кол-во подписчиков")
+    @admin.display(description='Кол-во подписчиков')
     def follow_count(self, obj):
         return Follow.objects.filter(author=obj).count()
 

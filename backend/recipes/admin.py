@@ -39,7 +39,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
     @admin.display(description='Ингредиенты')
     def get_ingredients(self, obj):
-        return ",\n".join(str(p) for p in obj.ingredients.all())
+        return ',\n'.join(str(p) for p in obj.ingredients.all())
 
     @admin.display(description='Тэги')
     def get_tags(self, obj):
