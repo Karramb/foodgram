@@ -38,7 +38,8 @@ class GramUserSerializer(UserSerializer):
     def get_is_subscribed(self, obj):
         request = self.context['request']
         return (request and request.user.is_authenticated
-                and request.user.subscriptions_client.filter(author=obj).exists())
+                and request.user.subscriptions_client.filter(
+                    author=obj).exists())
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):
