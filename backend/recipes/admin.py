@@ -43,7 +43,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
     @admin.display(description='Тэги')
     def get_tags(self, obj):
-        return ",\n".join(str(p) for p in obj.tags.all())
+        return ',\n'.join(str(p) for p in obj.tags.all())
 
     @admin.display(description='В избранном')
     def added_in_favorite(self, obj):

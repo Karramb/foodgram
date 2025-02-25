@@ -144,7 +144,7 @@ class RecipeIngredient(models.Model):
         return f'"{self.recipe}" содержит {self.ingredient}"'
 
 
-class ShoppingCartFavorite(models.Model):
+class UserRecipe(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -155,10 +155,6 @@ class ShoppingCartFavorite(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Рецепт',
     )
-
-    @property
-    def name_model(self):
-        return self.__class__.__name__
 
     class Meta:
         abstract = True
@@ -173,16 +169,17 @@ class ShoppingCartFavorite(models.Model):
                 f'"{self.user}"')
 
 
-class ShoppingCart(ShoppingCartFavorite):
-    class Meta(ShoppingCartFavorite.Meta):
-        default_related_name = 'shopping_cart'
+class ShoppingCart(UserRecipe):
+
+    class Meta(UserRecipe.Meta):
+        default_related_name = 'shopping_carts'
         verbose_name = 'список покупок'
         verbose_name_plural = 'Списки покупок'
 
 
-class Favorite(ShoppingCartFavorite):
+class Favorite(UserRecipe):
 
-    class Meta(ShoppingCartFavorite.Meta):
-        default_related_name = 'favorite'
+    class Meta(UserRecipe.Meta):
+        default_related_name = 'favorites'
         verbose_name = 'избранное'
         verbose_name_plural = 'Избранное'

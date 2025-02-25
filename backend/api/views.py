@@ -105,7 +105,7 @@ class GramUserViewSet(UserViewSet):
     def get_subscriptions(self, request):
         user = request.user
         queryset = User.objects.filter(
-            subscriptiontheauthor__user=user).annotate(
+            subscription_to_author__user=user).annotate(
             recipes_count=Count('recipes')
         ).order_by('username')
         pages = self.paginate_queryset(queryset)
@@ -150,7 +150,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def download_shopping_cart(self, request):
         ingredients = RecipeIngredient.objects.filter(
-            recipe__shopping_cart__user=request.user
+            recipe__shopping_carts__user=request.user
         ).values(
             'ingredient__name',
             'ingredient__measurement_unit',
@@ -183,8 +183,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe = get_object_or_404(Recipe, pk=pk)
         serializer = obj_ser(
             data={
-                'recipe': recipe,
-                'user': user
+                'recipe': recipe.id,
+                'user': user.id
             }
         )
         serializer.is_valid(raise_exception=True)

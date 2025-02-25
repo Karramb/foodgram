@@ -38,7 +38,7 @@ class GramUserSerializer(UserSerializer):
     def get_is_subscribed(self, obj):
         request = self.context['request']
         return (request and request.user.is_authenticated
-                and request.user.subscriptionuser.filter(author=obj).exists())
+                and request.user.subscriptions_client.filter(author=obj).exists())
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):
@@ -102,13 +102,12 @@ class FollowCreateSerializer(serializers.ModelSerializer):
 
 
 class FollowIssuanceSerializer(GramUserSerializer):
-    is_subscribed = serializers.SerializerMethodField()
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.IntegerField(default=0)
 
-    class Meta(UserSerializer.Meta):
+    class Meta(GramUserSerializer.Meta):
         model = User
-        fields = UserSerializer.Meta.fields + (
+        fields = GramUserSerializer.Meta.fields + (
             'recipes_count',
             'avatar',
             'is_subscribed',
@@ -124,9 +123,9 @@ class FollowIssuanceSerializer(GramUserSerializer):
 
     def get_recipes(self, obj):
         request = self.context['request']
-        if "recipes_limit" in request.GET:
+        if 'recipes_limit' in request.GET:
             try:
-                limit = int(request.GET["recipes_limit"])
+                limit = int(request.GET['recipes_limit'])
             except ValueError:
                 pass
         else:
@@ -206,15 +205,13 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def set_ingredients(ingredients, recipe):
-        ingredients_set = []
-        for ingredient in ingredients:
-            recipe_ingredient = RecipeIngredient(
-                ingredient=ingredient['ingredient']['id'],
+        RecipeIngredient.objects.bulk_create(
+            RecipeIngredient(
                 recipe=recipe,
+                ingredient=ingredient['ingredient']['id'],
                 amount=ingredient['amount']
-            )
-            ingredients_set.append(recipe_ingredient)
-        RecipeIngredient.objects.bulk_create(ingredients_set)
+            ) for ingredient in ingredients
+        )
 
     def to_representation(self, instance):
         serializer = RecipeSerializer(
@@ -251,9 +248,8 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 'tags': 'Добавьте тег.'})
         if len(tags) != len(set(tags)):
             raise serializers.ValidationError('Теги дублируются.')
-        ingredient_list = []
-        for ingredient in ingredients:
-            ingredient_list.append(ingredient['ingredient']['id'])
+        ingredient_list = [ingredient['ingredient'][
+            'id'] for ingredient in ingredients]
         if len(ingredient_list) != len(set(ingredient_list)):
             raise serializers.ValidationError('Ингредиенты дублируются.')
         return data

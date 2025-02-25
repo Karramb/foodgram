@@ -53,13 +53,13 @@ class Follow(models.Model):
     user = models.ForeignKey(
         GramUser,
         on_delete=models.CASCADE,
-        related_name='subscriptionuser',
+        related_name='subscriptions_client',
         verbose_name='Пользователь',
     )
     author = models.ForeignKey(
         GramUser,
         on_delete=models.CASCADE,
-        related_name='subscriptiontheauthor',
+        related_name='subscription_to_author',
         verbose_name='Автор',
     )
 
@@ -67,12 +67,12 @@ class Follow(models.Model):
         ordering = ('user',)
         verbose_name = 'подписка'
         verbose_name_plural = 'Подписки'
-        constraints = [
+        constraints = (
             models.UniqueConstraint(
                 fields=['user', 'author'],
                 name='unique subscribe'
             ),
-        ]
+        )
 
     def __str__(self):
         return f'{self.user} подписан на {self.author}'
