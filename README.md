@@ -25,7 +25,7 @@
 На свой сервер скопируйте файл docker-compose.production.yml, создайте файл .env и заполните его в соответствии с файлом env.example и запустите проект в режиме демона командой ```sudo docker compose -f docker-compose.production.yml up -d```.
 Выполните миграции и соберите статику бэкенда, скопируйте её в папку  /static/static/
 
-# Загрузить данные из csv-файлов:
+# Чтобы загрузить данные из csv-файлов:
 Разместите csv-файлы в каталоге "foodgram\backend\data" или измените путь "PATH_FOR_CSV" к каталогу в файле "foodgram\foodgram\settings.py"
 В каталоге с файлом "manage.py" запустить скрипт командой:
 ```python manage.py csv_loader```
