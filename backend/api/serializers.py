@@ -38,7 +38,7 @@ class GramUserSerializer(UserSerializer):
     def get_is_subscribed(self, obj):
         request = self.context['request']
         return (request and request.user.is_authenticated
-                and request.user.subscriptions_client.filter(
+                and request.user.user_subscriptions.filter(
                     author=obj).exists())
 
 
@@ -110,8 +110,6 @@ class FollowIssuanceSerializer(GramUserSerializer):
         model = User
         fields = GramUserSerializer.Meta.fields + (
             'recipes_count',
-            'avatar',
-            'is_subscribed',
             'recipes',
         )
         read_only_fields = (
