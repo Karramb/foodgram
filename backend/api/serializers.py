@@ -246,11 +246,12 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({
                 'tags': 'Добавьте тег.'})
         if len(tags) != len(set(tags)):
-            raise serializers.ValidationError('Теги дублируются.')
+            raise serializers.ValidationError({'tags': 'Теги дублируются.'})
         ingredient_list = [ingredient['ingredient'][
             'id'] for ingredient in ingredients]
         if len(ingredient_list) != len(set(ingredient_list)):
-            raise serializers.ValidationError('Ингредиенты дублируются.')
+            raise serializers.ValidationError({
+                'ingredients': 'Ингредиенты дублируются.'})
         return data
 
 
