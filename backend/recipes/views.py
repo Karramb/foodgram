@@ -1,7 +1,6 @@
 from django.shortcuts import redirect
 from django.views.decorators.http import require_GET
 from rest_framework import status
-from rest_framework.reverse import reverse
 
 from recipes.models import Recipe
 
