@@ -4,12 +4,10 @@ from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
-from recipes.views import short_url
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.reverse import reverse
 
 from api.filters import IngredientFilter, RecipeFilter
 from api.pagination import LimitPagination
@@ -166,18 +164,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
         )
         return response
 
-    @action(
-        detail=True,
-        methods=('get',),
-        permission_classes=(AllowAny,),
-        url_path='get-link',
-        url_name='get-link',
-    )
-    def get_link(self, request, pk=None):
-        recipe = get_object_or_404(Recipe, pk=pk)
-        short_link = reverse(short_url, args=[recipe.pk])
-        return Response({'short-link': request.build_absolute_uri(short_link)},
-                        status=status.HTTP_200_OK)
+    @action(detail=True, url_path='get-link')
+    def get_link(self, request, pk):
+        short_url = self.get_object().short_url
+        return Response(
+            {"short-link": request.build_absolute_uri(f'/s/{short_url}')})
 
     def create_obj(self, user, obj_ser, pk):
         recipe = get_object_or_404(Recipe, pk=pk)
